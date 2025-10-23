@@ -1,8 +1,11 @@
+package pt.ulusofona.lp2.greatprogrammingjourney;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameManager {
+    GameManager(){}
     public boolean createInitialBoard(String[][] playerInfo, int worldSize){
     return false;
     }
@@ -22,18 +25,18 @@ public class GameManager {
     return 0;
     }
     public boolean moveCurrentPlayer(int nrSpaces){
-return false;
+        return false;
     }
     public boolean gameIsOver(){
-return false;
+        return false;
     }
     public ArrayList<String> getGameResults(){
-return null;
+        return null;
     }
     public JPanel getAuthorsPanel(){
-return null;
+        return null;
     }
     public HashMap<String, String> customizeBoard(){
-return null;
+        return null;
     }
 }
