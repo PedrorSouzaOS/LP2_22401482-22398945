@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class GameManager {
-    public int tabuleiro;
-    public String[][] jogadores;
+    Tabuleiro tabuleiro;
+    public Player[] jogadores;
     public GameManager(){
 
     }
@@ -16,7 +16,7 @@ public class GameManager {
             return false;
         }
         if(worldSize>=(2*playerInfo.length) ){
-            this.tabuleiro = worldSize;
+            this.tabuleiro.tamanho = worldSize;
         }
         String[][] testeId = new String[playerInfo.length][4];
     for(int i= 0; i<playerInfo.length; i++ ){
@@ -38,10 +38,9 @@ public class GameManager {
     return "";
     }
     public String[] getProgrammerInfo(int id){
+        for (Player p : jogadores) {
+            if (Objects.equals(p.id, id)) {
 
-        for (String[] strings : jogadores) {
-            if (Integer.parseInt(strings[1]) == id) {
-                return strings;
             }
         }
         return null;
