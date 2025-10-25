@@ -12,24 +12,11 @@ public class GameManager {
 
     }
     public boolean createInitialBoard(String[][] playerInfo, int worldSize){
-        if (playerInfo.length< 2 || playerInfo.length>4){
-            return false;
-        }
+
         if(worldSize>=(2*playerInfo.length) ){
             this.tabuleiro.tamanho = worldSize;
         }
-        String[][] testeId = new String[playerInfo.length][4];
-    for(int i= 0; i<playerInfo.length; i++ ){
-        for(int j= 0;j<=i; j++){
-            if(Objects.equals(testeId[j][1], playerInfo[i][1])){
-                return false;
-            }
-        }
-        testeId[i] = playerInfo[i];
-        if (Objects.equals(playerInfo[i][2], "")||Objects.equals(playerInfo[i][2], null)){
-            return false;
-        }
-    }
+
 
 
         return true;
