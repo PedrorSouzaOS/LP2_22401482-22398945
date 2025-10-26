@@ -11,6 +11,7 @@ public class GameManager {
     public Player[] jogadores;
     final int jogadoresMinimos = 2;
     final int jogadoresMaximos = 4;
+    int currentPlayerIndex = 0;
 
     public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
         if (playerInfo.length < jogadoresMinimos || playerInfo.length > jogadoresMaximos) {
@@ -53,29 +54,22 @@ public class GameManager {
     }
 
     public String getImagePng(int nrSquare) {
-        if (nrSquare < 1 || nrSquare > this.tabuleiro.tamanho) {
+        if (tabuleiro == null || nrSquare < 1 || nrSquare > this.tabuleiro.tamanho) {
             return null;
         }
 
         if (nrSquare == this.tabuleiro.tamanho) {
-            return "glory.png";
+            return "glory.png"; // última casa
         }
 
         switch (nrSquare) {
-            case 1:
-                return "dice_1.png";
-            case 2:
-                return "dice_2.png";
-            case 3:
-                return "dice_3.png";
-            case 4:
-                return "dice_4.png";
-            case 5:
-                return "dice_5.png";
-            case 6:
-                return "dice_6.png";
-            default:
-                return null;
+            case 1: return "dice_1.png";
+            case 2: return "dice_2.png";
+            case 3: return "dice_3.png";
+            case 4: return "dice_4.png";
+            case 5: return "dice_5.png";
+            case 6: return "dice_6.png";
+            default: return null;
         }
     }
 
@@ -129,26 +123,64 @@ public class GameManager {
 
 
     public int getCurrentPlayerID() {
-        return 0;
+        if (jogadores == null || jogadores.length == 0) {
+            return -1; // nenhum jogador
+        }
+
+        if (currentPlayerIndex < 0 || currentPlayerIndex >= jogadores.length) {
+            currentPlayerIndex = 0;
+        }
+
+        return jogadores[currentPlayerIndex].id;
     }
 
     public boolean moveCurrentPlayer(int nrSpaces) {
-        return false;
+        if (jogadores == null || jogadores.length == 0 || tabuleiro == null) {
+            return false;
+        }
+
+        Player jogadorAtual = jogadores[currentPlayerIndex];
+
+        int posicaoAtual = Integer.parseInt(jogadorAtual.posicao);
+        int novaPosicao = posicaoAtual + nrSpaces;
+
+        if (novaPosicao > tabuleiro.tamanho) {
+            novaPosicao = tabuleiro.tamanho;
+        }
+
+        jogadorAtual.posicao = String.valueOf(novaPosicao);
+
+        currentPlayerIndex = (currentPlayerIndex + 1) % jogadores.length;
+
+        return true;
     }
+
 
     public boolean gameIsOver() {
+        if (jogadores == null || tabuleiro == null) {
+            return false;
+        }
+
+        for (Player p : jogadores) {
+            if (p.posicao != null && p.posicao.equals(String.valueOf(tabuleiro.tamanho))) {
+                return true;
+            }
+        }
+
         return false;
     }
 
-    public ArrayList<String> getGameResults() {
-        return null;
-    }
 
-    public JPanel getAuthorsPanel() {
-        return null;
-    }
+        public ArrayList<String> getGameResults () {
+            return null;
+        }
 
-    public HashMap<String, String> customizeBoard() {
-        return new HashMap<>();
-    }
+        public JPanel getAuthorsPanel () {
+            return null;
+        }
+
+        public HashMap<String, String> customizeBoard () {
+            return new HashMap<>();
+        }
+
 }
