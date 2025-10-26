@@ -5,4 +5,6 @@ import java.util.ArrayList;
 public class Tabuleiro {
     int tamanho;
     ArrayList<Player> jogadores;
+    public boolean tamanhoTabuleiro(int tamanho) {
+    }
 }
