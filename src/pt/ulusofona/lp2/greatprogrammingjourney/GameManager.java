@@ -6,31 +6,52 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class GameManager {
+
     Tabuleiro tabuleiro;
     public Player[] jogadores;
     final int jogadoresMinimos = 2;
     final int jogadoresMaximos = 4;
-    public boolean createInitialBoard(String[][] playerInfo, int worldSize){
-        if (playerInfo.length< jogadoresMinimos || playerInfo.length> jogadoresMaximos){
+
+    public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
+        if (playerInfo.length < jogadoresMinimos || playerInfo.length > jogadoresMaximos) {
             return false;
         }
-        if(worldSize>=(2*playerInfo.length) ){
+
+
+        if (worldSize >= (2 * playerInfo.length)) {
             this.tabuleiro.tamanho = worldSize;
         }
+
         String[][] testeId = new String[playerInfo.length][4];
-    for(int i= 0; i<playerInfo.length; i++ ){
-        for(int j= 0;j<=i; j++){
-            if(Objects.equals(testeId[j][1], playerInfo[i][1])){
+
+        for (int i = 0; i < playerInfo.length; i++) {
+            for (int j = 0; j <= i; j++) {
+                if (Objects.equals(testeId[j][1], playerInfo[i][1])) {
+                    return false;
+                }
+            }
+            testeId[i] = playerInfo[i];
+            if (playerInfo[i][2] == null || playerInfo[i][2].isEmpty()) {
                 return false;
             }
         }
-        testeId[i] = playerInfo[i];
-        if (Objects.equals(playerInfo[i][2], "")||Objects.equals(playerInfo[i][2], null)){
-            return false;
+
+        jogadores = new Player[playerInfo.length];
+        for (int i = 0; i < playerInfo.length; i++) {
+            int id = Integer.parseInt(playerInfo[i][0]);
+            String nome = playerInfo[i][1];
+            String[] linguagens = playerInfo[i][2].split(";");
+            ArrayList<String> listaLinguagens = new ArrayList<>();
+            for (String lang : linguagens) {
+                listaLinguagens.add(lang.trim());
+            }
+            Player.Cores cor = Player.Cores.valueOf(playerInfo[i][3].toUpperCase());
+            jogadores[i] = new Player(id, nome, listaLinguagens, Player.Cores, "1", true);
         }
-    }
+
         return true;
     }
+
     public String getImagePng(int nrSquare) {
         if (nrSquare < 1 || nrSquare > this.tabuleiro.tamanho) {
             return null;
@@ -41,46 +62,93 @@ public class GameManager {
         }
 
         switch (nrSquare) {
-            case 1: return "dice_1.png";
-            case 2: return "dice_2.png";
-            case 3: return "dice_3.png";
-            case 4: return "dice_4.png";
-            case 5: return "dice_5.png";
-            case 6: return "dice_6.png";
-            default: return null;
+            case 1:
+                return "dice_1.png";
+            case 2:
+                return "dice_2.png";
+            case 3:
+                return "dice_3.png";
+            case 4:
+                return "dice_4.png";
+            case 5:
+                return "dice_5.png";
+            case 6:
+                return "dice_6.png";
+            default:
+                return null;
         }
     }
 
-    public String[] getProgrammerInfo(int id){
-        for (Player p : jogadores) {
-            if (Objects.equals(p.id, id)) {
 
+    public String[] getProgrammerInfo(int id) {
+        if (jogadores == null) {
+            return null;
+        }
+
+        for (Player p : jogadores) {
+            if (p != null && p.id == id) {
+                return p.getInfoArray();
             }
         }
         return null;
     }
-    public String getProgrammerInfoAsStr(int id){
-    return "";
+
+    public String getProgrammerInfoAsStr(int id) {
+        String[] info = getProgrammerInfo(id);
+        if (info == null) {
+            return null;
+        }
+        return String.join(" | ", info);
     }
-    public String[] getSlotInfo(int position){
-    return null;
+
+    public String[] getSlotInfo(int position) {
+        if (tabuleiro == null || tabuleiro.tamanho <= 0) {
+            return null;
+        }
+
+        if (position < 1 || position > tabuleiro.tamanho) {
+            return null;
+        }
+
+        String[] slotInfo = new String[3];
+        slotInfo[0] = String.valueOf(position);
+
+        slotInfo[1] = "EMPTY";
+        slotInfo[2] = "Espaço vazio";
+
+        if (position == 1) {
+            slotInfo[1] = "START";
+            slotInfo[2] = "Início do tabuleiro";
+        } else if (position == tabuleiro.tamanho) {
+            slotInfo[1] = "GLORY";
+            slotInfo[2] = "Chegada! Vitória 🎉";
+        }
+
+        return slotInfo;
     }
-    public int getCurrentPlayerID(){
-    return 0;
+
+
+    public int getCurrentPlayerID() {
+        return 0;
     }
-    public boolean moveCurrentPlayer(int nrSpaces){
+
+    public boolean moveCurrentPlayer(int nrSpaces) {
         return false;
     }
-    public boolean gameIsOver(){
+
+    public boolean gameIsOver() {
         return false;
     }
-    public ArrayList<String> getGameResults(){
+
+    public ArrayList<String> getGameResults() {
         return null;
     }
-    public JPanel getAuthorsPanel(){
+
+    public JPanel getAuthorsPanel() {
         return null;
     }
-    public HashMap<String, String> customizeBoard(){
+
+    public HashMap<String, String> customizeBoard() {
         return new HashMap<>();
     }
 }
