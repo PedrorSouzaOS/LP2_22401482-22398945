@@ -3,7 +3,10 @@ package pt.ulusofona.lp2.greatprogrammingjourney;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+
+import static pt.ulusofona.lp2.greatprogrammingjourney.Player.recebePlayer;
+import static pt.ulusofona.lp2.greatprogrammingjourney.Player.ricochete;
+import static pt.ulusofona.lp2.greatprogrammingjourney.Tabuleiro.tamanhoTabuleiro;
 
 public class GameManager {
 
@@ -11,30 +14,13 @@ public class GameManager {
     public Player[] jogadores;
     final int jogadoresMinimos = 2;
     final int jogadoresMaximos = 4;
-    int currentPlayerIndex = 0;
+    int JOGADORATUAL = 0;
 
     public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
-        if (playerInfo.length < jogadoresMinimos || playerInfo.length > jogadoresMaximos) {
-            return false;
-        }
-
-
-        if (worldSize >= (2 * playerInfo.length)) {
+        if (tamanhoTabuleiro(playerInfo, worldSize)) {
             this.tabuleiro.tamanho = worldSize;
-        }
-
-        String[][] testeId = new String[playerInfo.length][4];
-
-        for (int i = 0; i < playerInfo.length; i++) {
-            for (int j = 0; j <= i; j++) {
-                if (Objects.equals(testeId[j][1], playerInfo[i][1])) {
-                    return false;
-                }
-            }
-            testeId[i] = playerInfo[i];
-            if (playerInfo[i][2] == null || playerInfo[i][2].isEmpty()) {
-                return false;
-            }
+        }if (!recebePlayer(playerInfo)){
+            return false;
         }
 
         jogadores = new Player[playerInfo.length];
@@ -47,7 +33,7 @@ public class GameManager {
                 listaLinguagens.add(lang.trim());
             }
             Player.Cores cor = Player.Cores.valueOf(playerInfo[i][3].toUpperCase());
-            jogadores[i] = new Player(id, nome, listaLinguagens, Player.Cores, "1", true);
+            jogadores[i] = new Player(id, nome, listaLinguagens, Player.Cores, 1, true);
         }
 
         return true;
@@ -124,33 +110,24 @@ public class GameManager {
 
     public int getCurrentPlayerID() {
         if (jogadores == null || jogadores.length == 0) {
-            return -1; // nenhum jogador
+            return -1; // nenhum jogador // como que não vai ter um jogador?
         }
 
-        if (currentPlayerIndex < 0 || currentPlayerIndex >= jogadores.length) {
-            currentPlayerIndex = 0;
-        }
+        if (JOGADORATUAL < 0 || JOGADORATUAL >= jogadores.length) {
+            JOGADORATUAL = 0;
+        }//isso serve pra alguma coisa?? é a gente que manipula os o currentplayer
 
-        return jogadores[currentPlayerIndex].id;
+        return jogadores[JOGADORATUAL].id;
     }
 
     public boolean moveCurrentPlayer(int nrSpaces) {
         if (jogadores == null || jogadores.length == 0 || tabuleiro == null) {
             return false;
-        }
+        }//dnv não tem pra que fazer essa verificação
 
-        Player jogadorAtual = jogadores[currentPlayerIndex];
+        jogadores[JOGADORATUAL].posicao = ricochete(jogadores[JOGADORATUAL].posicao+nrSpaces, tabuleiro.tamanho);
 
-        int posicaoAtual = Integer.parseInt(jogadorAtual.posicao);
-        int novaPosicao = posicaoAtual + nrSpaces;
-
-        if (novaPosicao > tabuleiro.tamanho) {
-            novaPosicao = tabuleiro.tamanho;
-        }
-
-        jogadorAtual.posicao = String.valueOf(novaPosicao);
-
-        currentPlayerIndex = (currentPlayerIndex + 1) % jogadores.length;
+        JOGADORATUAL = (JOGADORATUAL + 1) % jogadores.length;
 
         return true;
     }
@@ -162,7 +139,7 @@ public class GameManager {
         }
 
         for (Player p : jogadores) {
-            if (p.posicao != null && p.posicao.equals(String.valueOf(tabuleiro.tamanho))) {
+            if (p.posicao==tabuleiro.tamanho) {
                 return true;
             }
         }
@@ -176,6 +153,7 @@ public class GameManager {
         }
 
         public JPanel getAuthorsPanel () {
+            JPanel teste = new JPanel();
             return null;
         }
 
